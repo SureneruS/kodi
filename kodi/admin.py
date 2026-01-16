@@ -94,13 +94,22 @@ class FlagDashboard(BaseView):
     name = "Flag Dashboard"
     icon = "fa-solid fa-gauge"
 
+    # Set by create_flag_dashboard factory
+    engine: Any = None
+
     @expose("/flag-dashboard", methods=["GET"])
     async def flag_dashboard(self, request: Request) -> Response:
         from sqlalchemy import select
         from sqlalchemy.ext.asyncio import AsyncSession
         from sqlalchemy.orm import selectinload
 
-        async with AsyncSession(self.admin.engine) as session:  # type: ignore[attr-defined]
+        if self.engine is None:
+            return Response(
+                content="Dashboard not configured. Use create_flag_dashboard() factory.",
+                status_code=500,
+            )
+
+        async with AsyncSession(self.engine) as session:
             result = await session.execute(
                 select(Flag)
                 .options(selectinload(Flag.tenant_overrides), selectinload(Flag.user_overrides))
@@ -174,3 +183,12 @@ class FlagDashboard(BaseView):
         </body>
         </html>
         """
+
+
+def create_flag_dashboard(engine: Any) -> type[FlagDashboard]:
+    """Create a FlagDashboard view with the engine configured.
+
+    Usage:
+        admin.add_view(create_flag_dashboard(engine))
+    """
+    return type("FlagDashboard", (FlagDashboard,), {"engine": engine})
