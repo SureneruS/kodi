@@ -1,0 +1,68 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "kodi"
+version = "0.1.0"
+description = "Simple, robust feature flags for Python applications"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "Suren" }
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: FastAPI",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+keywords = ["feature-flags", "feature-toggles", "multi-tenant", "fastapi"]
+dependencies = [
+    "sqlalchemy>=2.0",
+]
+
+[project.optional-dependencies]
+redis = ["redis>=4.0"]
+fastapi = ["fastapi>=0.100"]
+admin = ["sqladmin>=0.15"]
+all = ["kodi[redis,fastapi,admin]"]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21",
+    "aiosqlite>=0.19",
+    "greenlet>=3.0",
+    "httpx>=0.24",
+    "ruff>=0.1",
+    "mypy>=1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/suren/kodi"
+Repository = "https://github.com/suren/kodi"
+
+[tool.hatch.build.targets.wheel]
+packages = ["kodi"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true

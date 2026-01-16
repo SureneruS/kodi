@@ -1,10 +1,11 @@
 {
   "permissions": {
+    "allow": [
+      "Skill(superpowers:brainstorming)",
+      "Bash(git commit:*)"
+    ],
     "additionalDirectories": [
       "/Users/suren/Workspace/cercli/recruitment-backend"
-    ],
-    "allow": [
-      "Skill(superpowers:brainstorming)"
     ]
   }
 }
