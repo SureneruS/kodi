@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "additionalDirectories": [
+      "/Users/suren/Workspace/cercli/recruitment-backend"
+    ],
+    "allow": [
+      "Skill(superpowers:brainstorming)"
+    ]
+  }
+}
