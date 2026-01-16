@@ -3,10 +3,11 @@ from typing import Any
 
 try:
     from fastapi import APIRouter, Depends, Query
-except ImportError:
-    raise ImportError("fastapi package required. Install with: pip install kodi[fastapi]")
+except ImportError as e:
+    raise ImportError("fastapi package required. Install with: pip install kodi[fastapi]") from e
 
-from kodi.core import get_all, get_context
+from kodi.context import get_context
+from kodi.core import get_all
 from kodi.exceptions import KodiContextNotLoadedError
 
 

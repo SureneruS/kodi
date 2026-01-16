@@ -5,7 +5,7 @@ from typing import Any
 class NullBackend:
     """No-op cache backend. Always returns cache miss."""
 
-    async def get(self, key: str) -> str | None:
+    async def get(self, key: str) -> str | None:  # noqa: ARG002
         return None
 
     async def set(self, key: str, value: str, ttl: int | None = None) -> None:
@@ -56,7 +56,7 @@ class RedisBackend:
             return None
         if isinstance(value, bytes):
             return value.decode("utf-8")
-        return value
+        return str(value)
 
     async def set(self, key: str, value: str, ttl: int | None = None) -> None:
         if ttl:
@@ -75,8 +75,8 @@ async def create_redis_backend(url: str) -> RedisBackend:
     """Create a RedisBackend from a URL."""
     try:
         from redis.asyncio import from_url
-    except ImportError:
-        raise ImportError("redis package required. Install with: pip install kodi[redis]")
+    except ImportError as e:
+        raise ImportError("redis package required. Install with: pip install kodi[redis]") from e
 
-    client = from_url(url)
+    client = from_url(url)  # type: ignore[no-untyped-call]
     return RedisBackend(client)

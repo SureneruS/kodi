@@ -61,7 +61,33 @@ target-version = "py310"
 line-length = 100
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "UP"]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "SIM",    # flake8-simplify
+    "ARG",    # flake8-unused-arguments
+    "PTH",    # flake8-use-pathlib
+    "RUF",    # Ruff-specific rules
+    "ASYNC",  # flake8-async
+    "S",      # flake8-bandit (security)
+    "T20",    # flake8-print
+    "PL",     # Pylint
+]
+ignore = [
+    "PLR0913",  # too many arguments - sometimes unavoidable
+    "PLR2004",  # magic value comparison - ok in tests
+    "PLC0415",  # import not at top level - intentional for optional deps
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "ARG001", "ARG002", "PLR2004"]  # allow asserts, unused args in fixtures
+"kodi/admin.py" = ["ARG002", "RUF012"]  # sqladmin requires specific signatures and mutable class attrs
+"kodi/core.py" = ["S101"]  # asserts used for type narrowing in internal functions
 
 [tool.mypy]
 python_version = "3.10"

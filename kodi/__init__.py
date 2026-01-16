@@ -20,30 +20,30 @@ from kodi.models import Flag, TenantFlag, UserFlag
 __version__ = "0.1.0"
 
 __all__ = [
-    # Core API
-    "init",
-    "close",
-    "load_context",
-    "is_enabled",
-    "is_disabled",
-    "get_all",
-    "get_enabled",
-    "is_any_enabled",
-    "is_all_enabled",
-    "is_enabled_async",
-    "override",
-    "invalidate_cache",
     # Cache
     "CacheBackend",
-    "RedisBackend",
-    "InMemoryBackend",
-    "NullBackend",
     # Models
     "Flag",
-    "TenantFlag",
-    "UserFlag",
+    "InMemoryBackend",
+    "KodiContextNotLoadedError",
     # Exceptions
     "KodiError",
     "KodiNotInitializedError",
-    "KodiContextNotLoadedError",
+    "NullBackend",
+    "RedisBackend",
+    "TenantFlag",
+    "UserFlag",
+    "close",
+    "get_all",
+    "get_enabled",
+    # Core API
+    "init",
+    "invalidate_cache",
+    "is_all_enabled",
+    "is_any_enabled",
+    "is_disabled",
+    "is_enabled",
+    "is_enabled_async",
+    "load_context",
+    "override",
 ]

@@ -1,5 +1,7 @@
 import json
+from collections.abc import Iterator
 from contextlib import contextmanager
+from typing import cast
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
@@ -110,11 +112,11 @@ async def _get_cached_flags() -> dict[str, bool]:
 
     cached = await _state.cache.get(CacheKeys.flags())
     if cached:
-        return json.loads(cached)
+        return cast(dict[str, bool], json.loads(cached))
 
     async with _state.session_factory() as session:
         result = await session.execute(select(Flag.name, Flag.enabled))
-        flags = {row.name: row.enabled for row in result}
+        flags: dict[str, bool] = {row.name: row.enabled for row in result}
 
     await _state.cache.set(CacheKeys.flags(), json.dumps(flags))
     return flags
@@ -126,7 +128,7 @@ async def _get_cached_tenant_overrides(tenant_id: str) -> dict[str, bool]:
 
     cached = await _state.cache.get(CacheKeys.tenant(tenant_id))
     if cached:
-        return json.loads(cached)
+        return cast(dict[str, bool], json.loads(cached))
 
     async with _state.session_factory() as session:
         result = await session.execute(
@@ -134,7 +136,7 @@ async def _get_cached_tenant_overrides(tenant_id: str) -> dict[str, bool]:
             .join(TenantFlag, Flag.id == TenantFlag.flag_id)
             .where(TenantFlag.tenant_id == tenant_id)
         )
-        overrides = {row.name: row.enabled for row in result}
+        overrides: dict[str, bool] = {row.name: row.enabled for row in result}
 
     await _state.cache.set(CacheKeys.tenant(tenant_id), json.dumps(overrides))
     return overrides
@@ -146,7 +148,7 @@ async def _get_cached_user_overrides(tenant_id: str, user_id: str) -> dict[str, 
 
     cached = await _state.cache.get(CacheKeys.user(tenant_id, user_id))
     if cached:
-        return json.loads(cached)
+        return cast(dict[str, bool], json.loads(cached))
 
     async with _state.session_factory() as session:
         result = await session.execute(
@@ -154,7 +156,7 @@ async def _get_cached_user_overrides(tenant_id: str, user_id: str) -> dict[str, 
             .join(UserFlag, Flag.id == UserFlag.flag_id)
             .where(UserFlag.tenant_id == tenant_id, UserFlag.user_id == user_id)
         )
-        overrides = {row.name: row.enabled for row in result}
+        overrides: dict[str, bool] = {row.name: row.enabled for row in result}
 
     await _state.cache.set(CacheKeys.user(tenant_id, user_id), json.dumps(overrides))
     return overrides
@@ -225,7 +227,7 @@ async def is_enabled_async(
 
 
 @contextmanager
-def override(flags: dict[str, bool]):
+def override(flags: dict[str, bool]) -> Iterator[None]:
     """Context manager to override flag values for testing."""
     prev_ctx = get_context()
     prev_flags = prev_ctx.flags if prev_ctx else {}

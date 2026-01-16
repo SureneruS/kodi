@@ -1,9 +1,9 @@
-from typing import Any
+from collections.abc import Callable
 
 try:
     from fastapi import HTTPException
-except ImportError:
-    raise ImportError("fastapi package required. Install with: pip install kodi[fastapi]")
+except ImportError as e:
+    raise ImportError("fastapi package required. Install with: pip install kodi[fastapi]") from e
 
 from kodi.core import is_enabled
 
@@ -11,7 +11,7 @@ from kodi.core import is_enabled
 def require_flag(
     flag_name: str,
     raise_exc: Exception | None = None,
-) -> Any:
+) -> Callable[[], None]:
     """FastAPI dependency that requires a flag to be enabled.
 
     Usage:

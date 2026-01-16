@@ -1,9 +1,13 @@
-from sqlalchemy import inspect, select, text
+from collections.abc import Callable, Coroutine
+from typing import Any
+
+from sqlalchemy import Connection, inspect, select, text
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from kodi.models import Base, SchemaVersion
 
 CURRENT_VERSION = 1
+UpgradeFunc = Callable[[Connection], Coroutine[Any, Any, None]]
 
 
 async def init_schema(engine: AsyncEngine) -> None:
@@ -45,6 +49,6 @@ async def _run_upgrades(conn, from_version: int) -> None:  # type: ignore
     )
 
 
-_UPGRADES: dict = {
+_UPGRADES: dict[int, UpgradeFunc] = {
     # Example: 2: _upgrade_to_v2,
 }

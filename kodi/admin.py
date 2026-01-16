@@ -1,7 +1,10 @@
+from typing import Any
+
 try:
     from sqladmin import ModelView
-except ImportError:
-    raise ImportError("sqladmin package required. Install with: pip install kodi[admin]")
+    from starlette.requests import Request
+except ImportError as e:
+    raise ImportError("sqladmin package required. Install with: pip install kodi[admin]") from e
 
 from kodi.core import invalidate_cache
 from kodi.models import Flag, TenantFlag, UserFlag
@@ -19,10 +22,12 @@ class FlagAdmin(ModelView, model=Flag):
 
     form_columns = [Flag.name, Flag.description, Flag.enabled]
 
-    async def after_model_change(self, data: dict, model: Flag, is_created: bool, request) -> None:  # type: ignore
+    async def after_model_change(
+        self, data: dict[str, Any], model: Flag, is_created: bool, request: Request
+    ) -> None:
         await invalidate_cache("flags")
 
-    async def after_model_delete(self, model: Flag, request) -> None:  # type: ignore
+    async def after_model_delete(self, model: Flag, request: Request) -> None:
         await invalidate_cache("flags")
 
 
@@ -31,19 +36,21 @@ class TenantFlagAdmin(ModelView, model=TenantFlag):
     name_plural = "Tenant Flag Overrides"
     icon = "fa-solid fa-building"
 
-    column_list = [TenantFlag.tenant_id, TenantFlag.flag, TenantFlag.enabled, TenantFlag.updated_at]
+    column_list = [
+        TenantFlag.tenant_id, TenantFlag.flag, TenantFlag.enabled, TenantFlag.updated_at
+    ]
     column_searchable_list = [TenantFlag.tenant_id]
     column_sortable_list = [TenantFlag.tenant_id, TenantFlag.enabled, TenantFlag.updated_at]
     column_default_sort = ("tenant_id", False)
 
     form_columns = [TenantFlag.flag, TenantFlag.tenant_id, TenantFlag.enabled]
 
-    async def after_model_change(  # type: ignore
-        self, data: dict, model: TenantFlag, is_created: bool, request
+    async def after_model_change(
+        self, data: dict[str, Any], model: TenantFlag, is_created: bool, request: Request
     ) -> None:
         await invalidate_cache("tenant", tenant_id=model.tenant_id)
 
-    async def after_model_delete(self, model: TenantFlag, request) -> None:  # type: ignore
+    async def after_model_delete(self, model: TenantFlag, request: Request) -> None:
         await invalidate_cache("tenant", tenant_id=model.tenant_id)
 
 
@@ -63,10 +70,10 @@ class UserFlagAdmin(ModelView, model=UserFlag):
 
     form_columns = [UserFlag.flag, UserFlag.tenant_id, UserFlag.user_id, UserFlag.enabled]
 
-    async def after_model_change(  # type: ignore
-        self, data: dict, model: UserFlag, is_created: bool, request
+    async def after_model_change(
+        self, data: dict[str, Any], model: UserFlag, is_created: bool, request: Request
     ) -> None:
         await invalidate_cache("user", tenant_id=model.tenant_id, user_id=model.user_id)
 
-    async def after_model_delete(self, model: UserFlag, request) -> None:  # type: ignore
+    async def after_model_delete(self, model: UserFlag, request: Request) -> None:
         await invalidate_cache("user", tenant_id=model.tenant_id, user_id=model.user_id)

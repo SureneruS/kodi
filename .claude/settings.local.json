@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Skill(superpowers:brainstorming)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(uv run ruff:*)",
+      "Bash(uv run:*)"
     ],
     "additionalDirectories": [
       "/Users/suren/Workspace/cercli/recruitment-backend"
