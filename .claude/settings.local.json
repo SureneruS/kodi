@@ -4,7 +4,9 @@
       "Skill(superpowers:brainstorming)",
       "Bash(git commit:*)",
       "Bash(uv run ruff:*)",
-      "Bash(uv run:*)"
+      "Bash(uv run:*)",
+      "Bash(git add:*)",
+      "Bash(uv sync:*)"
     ],
     "additionalDirectories": [
       "/Users/suren/Workspace/cercli/recruitment-backend"

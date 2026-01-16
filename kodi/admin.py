@@ -97,17 +97,16 @@ class FlagDashboard(BaseView):
     @expose("/flag-dashboard", methods=["GET"])
     async def flag_dashboard(self, request: Request) -> Response:
         from sqlalchemy import select
+        from sqlalchemy.ext.asyncio import AsyncSession
         from sqlalchemy.orm import selectinload
 
-        session = request.state.session
-
-        flags = (
-            await session.execute(
+        async with AsyncSession(self.admin.engine) as session:  # type: ignore[attr-defined]
+            result = await session.execute(
                 select(Flag)
                 .options(selectinload(Flag.tenant_overrides), selectinload(Flag.user_overrides))
                 .order_by(Flag.name)
             )
-        ).scalars().all()
+            flags = list(result.scalars().all())
 
         html = self._render_dashboard(flags)
         return Response(content=html, media_type="text/html")
