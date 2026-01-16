@@ -46,8 +46,8 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/suren/kodi"
-Repository = "https://github.com/suren/kodi"
+Homepage = "https://github.com/SureneruS/kodi"
+Repository = "https://github.com/SureneruS/kodi"
 
 [tool.hatch.build.targets.wheel]
 packages = ["kodi"]
